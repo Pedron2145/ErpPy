@@ -2,7 +2,7 @@
 
 from unittest import case
 from time import sleep
-from sales.cadastro import cadastro_cliente
+from sales.cadastro import cadastro_cliente, cadastro_vendor
 from sales.venda import venda
 
 valorLoop = 1
@@ -37,11 +37,20 @@ while valorLoop == 1:
             sleep(2)
         elif opcao_vendas == 2:
             print('Você escolheu a opção Realizar venda')
-            id_cliente = input('Digite o ID do cliente: ')
-            data = input('Digite a data da venda: ')
-            id_produto = input('Digite o ID do produto: ')
-            quantidade = int(input('Digite a quantidade vendida: '))
-            preco_unitario = float(input('Digite o preço unitário do produto: '))
+            print('Digite seu ID de vendedor e sua senha')
+            vendor = int(input('Digite seu ID de vendedor: '))
+            password = input('Digite sua senha: ')
+
+            if (vendor == '' or password == ''):
+                print('Todos os campos devem ser preenchidos. Por favor, tente novamente.')
+            elif (vendor != cadastro_vendor.id_vendedor or password != cadastro_vendor.senha):
+                print('ID de vendedor ou senha incorretos. Por favor, tente novamente.')
+            else:
+                id_cliente = input('Digite o ID do cliente: ')
+                data = input('Digite a data da venda: ')
+                id_produto = input('Digite o ID do produto: ')
+                quantidade = int(input('Digite a quantidade vendida: '))
+                preco_unitario = float(input('Digite o preço unitário do produto: '))
             
             if (id_cliente == '' or data == '' or id_produto == '' or quantidade == '' or preco_unitario == ''):
                 print('Todos os campos devem ser preenchidos. Por favor, tente novamente.')

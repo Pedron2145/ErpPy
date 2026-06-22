@@ -8,3 +8,10 @@ class cadastro_cliente:
         self.endereco = endereco
         self.status = status
 
+
+class cadastro_vendor:
+    def __init__(self, id_vendedor, senha):
+        self.id_vendedor = id_vendedor
+        self.senha = senha
+
+vendor = cadastro_vendor(1234, 'senha123')
