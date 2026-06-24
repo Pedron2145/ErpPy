@@ -1,0 +1,6 @@
+
+#Banco de dados
+db/
+
+#vscode
+.vscode/settings.json

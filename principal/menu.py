@@ -1,23 +1,33 @@
-('Bem vindo ao meu projeto de Controle \nempresarial via terminal')
+"""Menu principal do sistema de controle empresarial via terminal."""
 
-from unittest import case
 from time import sleep
-from sales.cadastro import cadastro_cliente, cadastro_vendor
-from sales.venda import venda
+from db import db
+from cadastro import Cliente, vendedor_padrao
+from client import CriacaoCliente, EnvioDb
+from venda import Venda
 
-valorLoop = 1
+print('Bem vindo ao meu projeto de Controle \nempresarial via terminal')
 
-while valorLoop == 1:
-    print('Digite o número da opção desejada: \n1 - Vendas \n2 - Financeiro \n3 - Estoque \n4 - Relatórios \n5 - Busca\n6 - Sair')
+'''Garante que a tabela de clientes existe antes de iniciar o menu'''
+CriacaoCliente()
+
+'''Valor do loop que será alterado quando o user escolher a opção de sair do programa'''
+valor_loop = 1
+
+while valor_loop == 1:
+    print('Digite o número da opção desejada: \n1 - Vendas \n2 - Financeiro '
+          '\n3 - Estoque \n4 - Relatórios \n5 - Busca\n6 - Sair')
 
     opcao = int(input('Opção: '))
 
-
+    '''Estrutura de decisão para cada uma das opções fornecidas no menu principal'''
     if opcao == 1:
         print('Você escolheu a opção Vendas')
         print('Escolha uma opção: \n1 - Cadastrar cliente \n2 - Realizar venda \n3 - Voltar ao menu principal')
         opcao_vendas = int(input('Opção: '))
+
         if opcao_vendas == 1:
+            '''Cadastro de Cliente'''
             print('Você escolheu a opção Cadastrar cliente')
             nome = input('Digite o nome do cliente: ')
             cpf_cnpj = input('Digite o CPF/CNPJ do cliente: ')
@@ -25,46 +35,60 @@ while valorLoop == 1:
             telefone = input('Digite o telefone do cliente: ')
             email = input('Digite o email do cliente: ')
             endereco = input('Digite o endereço do cliente: ')
-            status = input('Digite o status do cliente: ')
+            status = input('Digite o status do cliente (ativo/inativo): ')
 
-            if (nome == '' or cpf_cnpj == '' or empresa == '' or telefone == '' or email == '' or endereco == '' or status == ''):
+            '''Validação para garantir o preenchimento de todos os campos'''
+            if '' in (nome, cpf_cnpj, empresa, telefone, email, endereco, status):
                 print('Todos os campos devem ser preenchidos. Por favor, tente novamente.')
-
+            elif status not in ('ativo', 'inativo'):
+                print('Status inválido. Use "ativo" ou "inativo".')
             else:
-                cliente = cadastro_cliente(nome, cpf_cnpj, empresa, telefone, email, endereco, status)
-                print('Cliente {} cadastrado com sucesso!'.format(cliente.nome))
-            
+                '''Criação do objeto cliente e envio para o banco de dados'''
+                cliente = Cliente(nome, cpf_cnpj, empresa, telefone, email, endereco, status)
+                envio = EnvioDb(cliente)
+                envio.enviar_para_db()
+
             sleep(2)
+
         elif opcao_vendas == 2:
+            '''Realizar venda'''
             print('Você escolheu a opção Realizar venda')
             print('Digite seu ID de vendedor e sua senha')
-            vendor = int(input('Digite seu ID de vendedor: '))
-            password = input('Digite sua senha: ')
 
-            if (vendor == '' or password == ''):
+            '''Autenticação do vendedor para registro e rastreio da venda'''
+            id_vendedor = input('Digite seu ID de vendedor: ')
+            senha = input('Digite sua senha: ')
+
+            if id_vendedor == '' or senha == '':
                 print('Todos os campos devem ser preenchidos. Por favor, tente novamente.')
-            elif (vendor != cadastro_vendor.id_vendedor or password != cadastro_vendor.senha):
+            elif int(id_vendedor) != vendedor_padrao.id_vendedor or senha != vendedor_padrao.senha:
                 print('ID de vendedor ou senha incorretos. Por favor, tente novamente.')
             else:
+                '''Realização da venda, já que o vendedor foi autenticado'''
                 id_cliente = input('Digite o ID do cliente: ')
                 data = input('Digite a data da venda: ')
                 id_produto = input('Digite o ID do produto: ')
-                quantidade = int(input('Digite a quantidade vendida: '))
-                preco_unitario = float(input('Digite o preço unitário do produto: '))
-            
-            if (id_cliente == '' or data == '' or id_produto == '' or quantidade == '' or preco_unitario == ''):
-                print('Todos os campos devem ser preenchidos. Por favor, tente novamente.')
-            else:
-                venda = venda(id_cliente, data, id_produto, quantidade, preco_unitario, 0)
-                total = venda.calc_total()
-                print('Venda realizada com sucesso! Total da venda: R${:.2f}'.format(total))
+                quantidade = input('Digite a quantidade vendida: ')
+                preco_unitario = input('Digite o preço unitário do produto: ')
+
+                '''Validação para garantir o preenchimento de todos os campos'''
+                if '' in (id_cliente, data, id_produto, quantidade, preco_unitario):
+                    print('Todos os campos devem ser preenchidos. Por favor, tente novamente.')
+                else:
+                    quantidade = int(quantidade)
+                    preco_unitario = float(preco_unitario)
+                    venda = Venda(id_cliente, data, id_produto, quantidade, preco_unitario)
+                    total = venda.calc_total()
+                    print('Venda realizada com sucesso! Total da venda: R${:.2f}'.format(total))
 
             sleep(2)
+
         elif opcao_vendas == 3:
             print('Voltando ao menu principal...')
             sleep(2)
 
-        sleep(2)
+        else:
+            print('Opção inválida. Por favor, tente novamente.')
 
     elif opcao == 2:
         print('Você escolheu a opção Financeiro')
@@ -84,12 +108,9 @@ while valorLoop == 1:
 
     elif opcao == 6:
         print('Saindo do programa...')
-        valorLoop = 0
+        valor_loop = 0
 
     else:
         print('Opção inválida. Por favor, tente novamente.')
 
-
-
-
-
+db.close_connection()

@@ -1,5 +1,8 @@
-class cadastro_cliente:
-    def __init__(self, nome, cpf_cnpj,empresa, telefone, email, endereco, status):
+"""Classes de dados para clientes e vendedores."""
+
+
+class Cliente:
+    def __init__(self, nome, cpf_cnpj, empresa, telefone, email, endereco, status):
         self.nome = nome
         self.cpf_cnpj = cpf_cnpj
         self.empresa = empresa
@@ -9,9 +12,11 @@ class cadastro_cliente:
         self.status = status
 
 
-class cadastro_vendor:
+class Vendedor:
     def __init__(self, id_vendedor, senha):
         self.id_vendedor = id_vendedor
         self.senha = senha
 
-vendor = cadastro_vendor(1234, 'senha123')
+
+'''Vendedor de exemplo para autenticação no menu'''
+vendedor_padrao = Vendedor(1234, 'senha123')
