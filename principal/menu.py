@@ -5,6 +5,7 @@ from db import db
 from cadastro import Cliente, vendedor_padrao
 from client import CriacaoCliente, EnvioDb
 from venda import Venda
+from stock import Estoque, Busca_produtos
 
 print('Bem vindo ao meu projeto de Controle \nempresarial via terminal')
 
@@ -96,6 +97,24 @@ while valor_loop == 1:
 
     elif opcao == 3:
         print('Você escolheu a opção Estoque')
+        print('Escolha uma opção \n1 - Consulta\n2 - Entrada\n3 - Ajuste\n 4 - Cadastro\n 5 - Saída')
+        opcao_estoque = int(input(': '))
+        if (opcao_estoque == 1):
+            print('Consulta')
+            id_produto = int(input('Digite o código do produto a ser consultado\n: '))
+
+            if id_produto == '':
+                print('você deve digitar um valor')
+            else: #verificar
+                busca = Busca_produtos(id_produto)
+                busca.busca_produtos_id()
+                
+                print('Código: {}\nProduto: {}\nFornecedor: {}\nPosição: {}\n Quantidade: {}'.format(Estoque.id_produto, Estoque.nome_produto, Estoque.fornecedor, Estoque.posicao_estoque, Estoque.quantidade))
+
+
+
+        elif (opcao_estoque == 2):
+            print('Entrada')    
         sleep(2)
 
     elif opcao == 4:
